@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: postgres
+  password: postgres
+  host: localhost
+
+development:
+  <<: *default
+  database: task_collab_development
+
+test:
+  <<: *default
+  database: task_collab_test
+
+production:
+  <<: *default
+  database: task_collab_production
