@@ -22,8 +22,12 @@ FactoryBot.define do
     end
 
     trait :overdue do
-      due_date { 1.day.ago }
+      due_date { 1.week.from_now }
       status { 'todo' }
+
+      after(:create) do |task|
+        task.update_column(:due_date, 1.day.ago)
+      end
     end
 
     trait :high_priority do

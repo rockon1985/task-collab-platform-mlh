@@ -85,7 +85,7 @@ RSpec.describe Task, type: :model do
 
   describe '#overdue?' do
     it 'returns true for past due date and not done' do
-      task = build(:task, :overdue)
+      task = create(:task, :overdue)
       expect(task.overdue?).to be true
     end
 
@@ -117,7 +117,9 @@ RSpec.describe Task, type: :model do
     end
 
     it 'calculates time difference for completed tasks' do
-      task = create(:task, :completed)
+      task = create(:task)
+      task.update_column(:completed_at, task.created_at + 5.minutes)
+      expect(task.time_to_completion).to be_a(Numeric)
       expect(task.time_to_completion).to be > 0
     end
   end

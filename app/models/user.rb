@@ -32,6 +32,7 @@ class User < ApplicationRecord
   validates :password, length: { minimum: 8 }, if: -> { new_record? || !password.nil? }
 
   # Callbacks
+  before_validation :normalize_email
   before_save :normalize_email
   after_create :create_welcome_activity
 
@@ -67,7 +68,7 @@ class User < ApplicationRecord
   private
 
   def normalize_email
-    self.email = email.downcase.strip
+    self.email = email.downcase.strip if email.present?
   end
 
   def create_welcome_activity

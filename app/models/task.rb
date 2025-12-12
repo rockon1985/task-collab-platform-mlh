@@ -28,7 +28,7 @@ class Task < ApplicationRecord
   validates :title, presence: true, length: { minimum: 3, maximum: 200 }
   validates :status, inclusion: { in: %w[todo in_progress review done] }
   validates :priority, inclusion: { in: %w[low medium high critical] }
-  validate :due_date_cannot_be_in_past, if: -> { due_date_changed? && due_date.present? }
+  validate :due_date_cannot_be_in_past, if: -> { due_date_changed? && due_date.present? && new_record? }
 
   # Callbacks
   before_create :set_position

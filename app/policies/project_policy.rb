@@ -19,6 +19,14 @@ class ProjectPolicy < ApplicationPolicy
     user.admin? || record.owner_id == user.id
   end
 
+  def archive?
+    update?
+  end
+
+  def analytics?
+    show?
+  end
+
   class Scope < Scope
     def resolve
       if user.admin?

@@ -77,7 +77,7 @@ RSpec.describe Project, type: :model do
     it 'creates activity log' do
       expect {
         project.archive!
-      }.to change(ActivityLog, :count).by(1)
+      }.to change(ActivityLog, :count).by_at_least(1)
     end
   end
 

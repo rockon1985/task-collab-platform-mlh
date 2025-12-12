@@ -34,6 +34,11 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
 
+  # ActiveJob test adapter
+  config.before(:each) do
+    ActiveJob::Base.queue_adapter = :test
+  end
+
   # FactoryBot
   config.include FactoryBot::Syntax::Methods
 
