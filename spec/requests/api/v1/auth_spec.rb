@@ -34,7 +34,7 @@ RSpec.describe 'Api::V1::Auth', type: :request do
       it 'returns errors for missing fields' do
         post '/api/v1/auth/register', params: { user: { email: 'test@example.com' } }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json_response).to have_key('errors')
       end
 
@@ -44,7 +44,7 @@ RSpec.describe 'Api::V1::Auth', type: :request do
 
         post '/api/v1/auth/register', params: params
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

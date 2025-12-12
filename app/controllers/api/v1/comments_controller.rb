@@ -18,7 +18,7 @@ class Api::V1::CommentsController < ApplicationController
     if @comment.save
       render json: CommentSerializer.new(@comment).as_json, status: :created
     else
-      render json: { errors: @comment.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @comment.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -29,7 +29,7 @@ class Api::V1::CommentsController < ApplicationController
     if @comment.update(comment_params)
       render json: CommentSerializer.new(@comment).as_json
     else
-      render json: { errors: @comment.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @comment.errors.full_messages }, status: :unprocessable_content
     end
   end
 

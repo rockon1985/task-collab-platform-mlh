@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '>= 3.2.2'
+ruby '>= 3.3.6'
 
 # Core Rails
-gem 'rails', '~> 7.1.0'
+gem 'rails', '~> 8.0.0'
 gem 'pg', '~> 1.5'
 gem 'puma', '~> 6.4'
 
@@ -22,7 +22,7 @@ gem 'sidekiq', '~> 7.2'
 gem 'redis', '~> 5.0'
 
 # Utilities
-gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+gem 'tzinfo-data', platforms: %i[windows jruby]
 gem 'bootsnap', require: false
 gem 'faker', '~> 3.2'
 
@@ -49,6 +49,8 @@ group :test do
 end
 
 group :development do
-  gem 'annotate', '~> 3.2'
-  gem 'bullet', '~> 7.1'
+  # Annotate gem doesn't support Rails 8 yet, removing temporarily
+  # gem 'annotate', '~> 3.2'
+  # Bullet gem doesn't support Rails 8 yet, removing temporarily
+  # gem 'bullet', '~> 7.1'
 end

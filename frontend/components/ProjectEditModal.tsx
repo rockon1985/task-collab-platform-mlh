@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '@/lib/api';
 import { Project } from '@/types';
+import { toast } from '@/lib/toast';
 
 interface ProjectEditModalProps {
   isOpen: boolean;
@@ -40,6 +41,7 @@ export default function ProjectEditModal({ isOpen, onClose, project, onProjectUp
         project: formData,
       });
       console.log('Project updated successfully:', response.data);
+      toast.success('Project updated successfully!');
       onProjectUpdated();
       onClose();
     } catch (err: any) {
@@ -48,6 +50,7 @@ export default function ProjectEditModal({ isOpen, onClose, project, onProjectUp
                           err.response?.data?.error ||
                           'Failed to update project';
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -64,12 +67,14 @@ export default function ProjectEditModal({ isOpen, onClose, project, onProjectUp
     try {
       await apiClient.delete(`/projects/${project?.id}`);
       console.log('Project deleted successfully');
+      toast.success('Project deleted successfully!');
       onProjectUpdated();
       onClose();
     } catch (err: any) {
       console.error('Project deletion error:', err);
       const errorMessage = err.response?.data?.error || 'Failed to delete project';
       setError(errorMessage);
+      toast.error(errorMessage);
       setLoading(false);
     }
   };

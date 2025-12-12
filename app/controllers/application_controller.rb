@@ -49,6 +49,6 @@ class ApplicationController < ActionController::API
     render json: {
       error: 'Validation failed',
       details: exception.record.errors.full_messages
-    }, status: :unprocessable_entity
+    }, status: :unprocessable_content
   end
 end

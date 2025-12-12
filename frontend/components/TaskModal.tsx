@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import apiClient from '@/lib/api';
 import { User } from '@/types';
+import { toast } from '@/lib/toast';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -67,6 +68,7 @@ export default function TaskModal({ isOpen, onClose, projectId, projectMembers, 
       };
       const response = await apiClient.post(`/projects/${projectId}/tasks`, payload);
       console.log('✅ Task created successfully:', response.data);
+      toast.success('Task created successfully!');
 
       // Reset form
       setFormData({
@@ -108,6 +110,7 @@ export default function TaskModal({ isOpen, onClose, projectId, projectMembers, 
       }
 
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

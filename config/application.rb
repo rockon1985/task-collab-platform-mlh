@@ -13,8 +13,11 @@ Bundler.require(*Rails.groups)
 
 module TaskCollabPlatform
   class Application < Rails::Application
-    config.load_defaults 7.1
+    config.load_defaults 8.0
     config.api_only = true
+
+    # Rails 8.1 timezone behavior
+    config.active_support.to_time_preserves_timezone = :zone
 
     # Middleware for API
     config.middleware.insert_before 0, Rack::Cors do

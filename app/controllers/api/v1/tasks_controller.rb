@@ -26,7 +26,7 @@ class Api::V1::TasksController < ApplicationController
     if @task.save
       render json: TaskSerializer.new(@task).as_json, status: :created
     else
-      render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @task.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -37,7 +37,7 @@ class Api::V1::TasksController < ApplicationController
     if @task.update(task_params)
       render json: TaskSerializer.new(@task).as_json
     else
-      render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @task.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -58,7 +58,7 @@ class Api::V1::TasksController < ApplicationController
     if result.success?
       render json: TaskSerializer.new(result.data[:task]).as_json
     else
-      render json: { error: result.error }, status: :unprocessable_entity
+      render json: { error: result.error }, status: :unprocessable_content
     end
   end
 

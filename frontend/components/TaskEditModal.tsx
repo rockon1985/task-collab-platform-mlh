@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '@/lib/api';
 import { Task, User } from '@/types';
+import { toast } from '@/lib/toast';
 
 interface TaskEditModalProps {
   isOpen: boolean;
@@ -71,6 +72,7 @@ export default function TaskEditModal({ isOpen, onClose, task, projectId, projec
 
       const response = await apiClient.put(`/projects/${projectId}/tasks/${task?.id}`, payload);
       console.log('✅ Task updated successfully:', response.data);
+      toast.success('Task updated successfully!');
 
       onTaskUpdated();
       onClose();
@@ -107,6 +109,7 @@ export default function TaskEditModal({ isOpen, onClose, task, projectId, projec
       }
 
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -118,12 +121,15 @@ export default function TaskEditModal({ isOpen, onClose, task, projectId, projec
     setLoading(true);
     try {
       await apiClient.delete(`/projects/${projectId}/tasks/${task?.id}`);
-      console.log('✅ Task deleted successfully');
+      console.log('Task deleted successfully');
+      toast.success('Task deleted successfully!');
       onTaskUpdated();
       onClose();
     } catch (err: any) {
       console.error('❌ Task deletion error:', err);
-      setError('Failed to delete task');
+      const errorMessage = 'Failed to delete task';
+      setError(errorMessage);
+      toast.error(errorMessage);
       setLoading(false);
     }
   };

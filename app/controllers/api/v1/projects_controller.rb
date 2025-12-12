@@ -23,7 +23,7 @@ class Api::V1::ProjectsController < ApplicationController
     if @project.save
       render json: ProjectSerializer.new(@project).as_json, status: :created
     else
-      render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @project.errors.full_messages }, status: :unprocessable_content
     end
   end
 
@@ -34,7 +34,7 @@ class Api::V1::ProjectsController < ApplicationController
     if @project.update(project_params)
       render json: ProjectSerializer.new(@project).as_json
     else
-      render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @project.errors.full_messages }, status: :unprocessable_content
     end
   end
 

@@ -20,13 +20,13 @@ Rails.application.configure do
   config.log_level = :debug
   config.log_tags = [:request_id]
 
-  # Bullet for N+1 detection
-  config.after_initialize do
-    Bullet.enable = true
-    Bullet.alert = false
-    Bullet.bullet_logger = true
-    Bullet.console = true
-    Bullet.rails_logger = true
-    Bullet.add_footer = false
-  end
+  # Bullet for N+1 detection (commented out - gem not yet compatible with Rails 8)
+  # config.after_initialize do
+  #   Bullet.enable = true
+  #   Bullet.alert = false
+  #   Bullet.bullet_logger = true
+  #   Bullet.console = true
+  #   Bullet.rails_logger = true
+  #   Bullet.add_footer = false
+  # end
 end

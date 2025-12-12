@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import apiClient from '@/lib/api';
+import { toast } from '@/lib/toast';
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ export default function ProjectModal({ isOpen, onClose, onProjectCreated }: Proj
         project: formData,
       });
       console.log('Project created successfully:', response.data);
+      toast.success('Project created successfully!');
       setFormData({
         name: '',
         description: '',
@@ -44,6 +46,7 @@ export default function ProjectModal({ isOpen, onClose, onProjectCreated }: Proj
                           err.response?.data?.error ||
                           'Failed to create project';
       setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

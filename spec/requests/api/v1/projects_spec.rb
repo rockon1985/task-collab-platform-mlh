@@ -87,7 +87,7 @@ RSpec.describe 'Api::V1::Projects', type: :request do
     it 'returns errors for invalid params' do
       post '/api/v1/projects', params: { project: { name: 'Ab' } }, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response).to have_key('errors')
     end
   end
