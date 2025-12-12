@@ -19,12 +19,19 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
+    console.log('[Login Page] Submitting login with:', email);
+
     try {
       await login(email, password);
+      console.log('[Login Page] Login successful, redirecting...');
       router.push('/projects');
     } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.response?.data?.error || 'Invalid email or password');
+      console.error('[Login Page] Login error:', err);
+      console.error('[Login Page] Error response:', err.response);
+      console.error('[Login Page] Error data:', err.response?.data);
+      const errorMessage = err.response?.data?.error || err.response?.data?.errors?.[0] || 'Invalid email or password';
+      console.error('[Login Page] Displaying error:', errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
