@@ -19,6 +19,7 @@ require 'factory_bot_rails'
 require 'shoulda/matchers'
 require 'webmock/rspec'
 require 'vcr'
+require 'pundit/matchers'
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 

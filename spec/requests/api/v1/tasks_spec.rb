@@ -44,6 +44,59 @@ RSpec.describe 'Api::V1::Tasks', type: :request do
         expect(json.length).to eq(1)
         expect(json.first['assignee']['id']).to eq(assignee.id)
       end
+
+      it 'filters tasks by priority' do
+        create(:task, project: project, creator: user, priority: 'high')
+        create(:task, project: project, creator: user, priority: 'low')
+
+        get "/api/v1/projects/#{project.id}/tasks",
+            params: { priority: 'high' },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(1)
+        expect(json.first['priority']).to eq('high')
+      end
+
+      it 'sorts tasks by priority' do
+        create(:task, project: project, creator: user, priority: 'low', title: 'Low priority')
+        create(:task, project: project, creator: user, priority: 'high', title: 'High priority')
+
+        get "/api/v1/projects/#{project.id}/tasks",
+            params: { sort_by: 'priority' },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.first['priority']).to eq('critical').or eq('high')
+      end
+
+      it 'sorts tasks by due_date' do
+        create(:task, project: project, creator: user, due_date: 3.days.from_now)
+        create(:task, project: project, creator: user, due_date: 1.day.from_now)
+
+        get "/api/v1/projects/#{project.id}/tasks",
+            params: { sort_by: 'due_date' },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.length).to be >= 2
+      end
+
+      it 'sorts tasks by position' do
+        create(:task, project: project, creator: user, position: 2)
+        create(:task, project: project, creator: user, position: 1)
+
+        get "/api/v1/projects/#{project.id}/tasks",
+            params: { sort_by: 'position' },
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.length).to be >= 2
+      end
     end
 
     context 'without authentication' do
@@ -254,6 +307,71 @@ RSpec.describe 'Api::V1::Tasks', type: :request do
         patch "/api/v1/projects/#{project.id}/tasks/#{task.id}",
               params: update_params.to_json,
               headers: viewer_headers.merge({ 'Content-Type' => 'application/json' })
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe 'POST /api/v1/projects/:project_id/tasks/:id/assign' do
+    let(:assignee) { create(:user) }
+    let!(:membership) { create(:project_membership, project: project, user: assignee) }
+
+    context 'with valid assignee' do
+      it 'assigns the task to the user' do
+        post "/api/v1/projects/#{project.id}/tasks/#{task.id}/assign",
+             params: { assignee_id: assignee.id },
+             headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json['assignee']['id']).to eq(assignee.id)
+      end
+
+      it 'enqueues notification job' do
+        expect(TaskAssignmentNotificationJob).to receive(:perform_later).with(task.id, assignee.id)
+
+        post "/api/v1/projects/#{project.id}/tasks/#{task.id}/assign",
+             params: { assignee_id: assignee.id },
+             headers: auth_headers
+      end
+    end
+
+    context 'with invalid assignee' do
+      let(:non_member) { create(:user) }
+
+      it 'returns unprocessable content' do
+        post "/api/v1/projects/#{project.id}/tasks/#{task.id}/assign",
+             params: { assignee_id: non_member.id },
+             headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_content)
+        json = JSON.parse(response.body)
+        expect(json['error']).to be_present
+      end
+    end
+
+    context 'when task is already assigned to user' do
+      before { task.update(assignee: assignee) }
+
+      it 'returns unprocessable content' do
+        post "/api/v1/projects/#{project.id}/tasks/#{task.id}/assign",
+             params: { assignee_id: assignee.id },
+             headers: auth_headers
+
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context 'without proper permissions' do
+      let(:viewer) { create(:user) }
+      let!(:viewer_member) { create(:project_membership, project: project, user: viewer, role: 'viewer') }
+      let(:viewer_headers) { { 'Authorization' => "Bearer #{AuthenticationService.encode_token(user_id: viewer.id)}" } }
+
+      it 'returns forbidden' do
+        post "/api/v1/projects/#{project.id}/tasks/#{task.id}/assign",
+             params: { assignee_id: assignee.id },
+             headers: viewer_headers
 
         expect(response).to have_http_status(:forbidden)
       end

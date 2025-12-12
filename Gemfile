@@ -46,6 +46,7 @@ group :test do
   gem 'simplecov', require: false
   gem 'webmock', '~> 3.19'
   gem 'vcr', '~> 6.2'
+  gem 'pundit-matchers', '~> 3.1'
 end
 
 group :development do
